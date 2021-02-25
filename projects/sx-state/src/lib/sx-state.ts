@@ -1,15 +1,16 @@
 import { OnDestroy } from '@angular/core';
 import produce from 'immer';
 import { BehaviorSubject, Observable, Observer } from 'rxjs';
+import { SxStateOptions } from './meta';
 
-function isDraftable(value) {
+function isDraftable(value: any) {
   if (!value) {
     return false;
   }
   return isPlainObject(value);
 }
 
-function isPlainObject(value) {
+function isPlainObject(value: any) {
   if (!value || typeof value !== 'object') {
     return false;
   }
@@ -23,7 +24,7 @@ function isPlainObject(value) {
 /**
  * Deep freeze if possible.
  */
-export function deepFreeze(obj) {
+export function deepFreeze(obj: any) {
   if (!isDraftable(obj) || Object.isFrozen(obj)) {
     return;
   }
@@ -42,38 +43,36 @@ export function deepFreeze(obj) {
 /**
  * Deep clone.
  */
-export function clone(obj) {
+export function clone<Obj = any>(obj: Obj): Obj {
   if (!isDraftable(obj)) {
     return obj;
   }
   if (Array.isArray(obj)) {
-    return obj.map(clone);
+    return obj.map(clone) as any;
   }
-  const cloned = Object.create(Object.getPrototypeOf(obj));
-  for (const key in obj) {
-    if (obj.hasOwnProperty(key)) {
-      cloned[key] = clone(obj[key]);
+  if (typeof obj === 'object') {
+    const cloned = Object.create(Object.getPrototypeOf(obj));
+    for (const key in obj) {
+      if ((obj as any).hasOwnProperty(key)) {
+        cloned[key] = clone(obj[key]);
+      }
     }
+    return cloned;
   }
-  return cloned;
+  throw new Error('SxState: Strange type here.');
 }
 
-export interface StateValueOptions {
-  noClone?: boolean;
-  noFreeze?: boolean;
-}
-
-export class StateValue<T = any> implements OnDestroy {
+export class SxState<T = any> implements OnDestroy {
   private _value: BehaviorSubject<T>;
 
-  private options: Required<StateValueOptions> = {
+  private options: Required<SxStateOptions> = {
     noClone: false,
     noFreeze: false,
   };
 
   constructor(
     private initialValue: T,
-    options?: StateValueOptions,
+    options?: SxStateOptions,
   ) {
     this.options = {...this.options, ...options};
     this._value = new BehaviorSubject<T>(this.prepareNewValue(initialValue, this.options));
@@ -115,7 +114,7 @@ export class StateValue<T = any> implements OnDestroy {
   /**
    * Set new value. With options if needed.
    */
-  setValue(value: T, options: StateValueOptions = {}) {
+  setValue(value: T, options: SxStateOptions = {}) {
     this._value.next(this.prepareNewValue(value, {...this.options, ...options}));
   }
 
@@ -145,7 +144,7 @@ export class StateValue<T = any> implements OnDestroy {
   /**
    * Clone and freeze if needed.
    */
-  private prepareNewValue(value, options: Required<StateValueOptions>) {
+  private prepareNewValue(value: T, options: Required<SxStateOptions>) {
     const prepared = options.noClone ? value : clone(value);
     if (!options.noFreeze) {
       deepFreeze(prepared);

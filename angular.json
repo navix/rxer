@@ -3,33 +3,38 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "state": {
+    "sx-state": {
       "projectType": "library",
-      "root": "projects/state",
-      "sourceRoot": "projects/state/src",
+      "root": "sx-state",
+      "sourceRoot": "projects/sx-state/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/state/tsconfig.lib.json",
-            "project": "projects/state/ng-package.json"
+            "tsConfig": "projects/sx-state/tsconfig.lib.json",
+            "project": "projects/sx-state/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/sx-state/tsconfig.lib.prod.json"
+            }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/state/src/test.ts",
-            "tsConfig": "projects/state/tsconfig.spec.json",
-            "karmaConfig": "projects/state/karma.conf.js"
+            "main": "projects/sx-state/src/test.ts",
+            "tsConfig": "projects/sx-state/tsconfig.spec.json",
+            "karmaConfig": "projects/sx-state/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/state/tsconfig.lib.json",
-              "projects/state/tsconfig.spec.json"
+              "projects/sx-state/tsconfig.lib.json",
+              "projects/sx-state/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -37,6 +42,10 @@
           }
         }
       }
-    }},
-  "defaultProject": "state"
+    },
+  },
+  "defaultProject": "sx-state",
+  "cli": {
+    "analytics": "f650e3a7-08e0-4f59-8974-48fe5825fb2a"
+  }
 }

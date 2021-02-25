@@ -7,16 +7,16 @@ StateValue automatically clones and freezes all states.
 ## Installation
 
 ```typescript
-npm i @ngx-kit/state immer
+npm i @novyk/sx-state immer
 ```
 
 ## Usage
 
-### Create `StateValue`
+### Create `SxState`
 
 ```typescript
 export class AppComponent {
-  readonly data = new StateValue<SomeValueInterface>(initialData);
+  readonly data = new SxState<SomeValueInterface>(initialData);
 }
 ```
 
@@ -68,7 +68,7 @@ someObervable.subscribe(this.data.observer);
 * noFreeze — do not freeze all passed values
 
 ```typescript
-new StateValue<SomeValueInterface>(initialData, {
+new SxState<SomeValueInterface>(initialData, {
   noClone: true,
   noFreeze: true,
 });
